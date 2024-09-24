@@ -1,0 +1,42 @@
+{% extends "auctions/layout.html" %}
+
+{% block title %}
+Login
+{% endblock %}
+
+{% block body %}
+
+<div class="section flex flex-col justify-center items-center ">
+    <div class="space-y-5 max-w-[450px] w-full">
+        <h2 class="text-2xl font-medium">Login</h2>
+
+        {% if message %}
+        <div class="text-rose-500 font-medium text-base">{{ message }}</div>
+        {% endif %}
+
+        <form class="flex flex-col gap-5 shrink-0" action="{% url 'login' %}" method="post">
+            {% csrf_token %}
+            <div class="">
+                <input autofocus
+                    class=" py-2 px-4 w-full rounded-md bg-transparent border border-gray-600 outline-none hover:ring-2 focus:ring-2 hover:ring-blue-500/80 focus:ring-blue-500/80"
+                    type="text" name="username" placeholder="Username">
+            </div>
+            <div class="">
+                <input
+                    class=" py-2 px-4 w-full rounded-md bg-transparent border border-gray-600 outline-none hover:ring-2 focus:ring-2 hover:ring-blue-500/80 focus:ring-blue-500/80"
+                    type="password" name="password" placeholder="Password">
+            </div>
+
+            <input class=" bg-indigo-600 font-medium tracking-wider w-fit rounded-md py-2 px-8 mb-3" type="submit"
+                value="Login">
+        </form>
+
+        <span>Don't have an account?
+            <a class="cursor-pointer text-blue-400 underline underline-offset-2 hover:text-blue-500"
+                href="{% url 'register' %}">Register here</a>
+        </span>
+    </div>
+</div>
+
+
+{% endblock %}

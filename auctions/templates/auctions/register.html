@@ -1,0 +1,52 @@
+{% extends "auctions/layout.html" %}
+
+{% block title %}
+Register
+{% endblock %}
+
+{% block body %}
+
+<div class="section flex justify-center items-center">
+    <div class="space-y-5 max-w-[450px] w-full">
+
+        <h2 class="text-2xl font-medium">Register</h2>
+
+        {% if message %}
+        <div class="text-rose-500 font-medium text-base">{{ message }}</div>
+        {% endif %}
+
+        <form class="flex flex-col gap-5 w-full" action="{% url 'register' %}" method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <input
+                    class="form-control py-2 px-4 w-full rounded-md bg-transparent border border-gray-600 outline-none hover:ring-2 focus:ring-2 hover:ring-blue-500/80 focus:ring-blue-500/80"
+                    autofocus type="text" name="username" placeholder="Username">
+            </div>
+            <div class="form-group">
+                <input
+                    class="form-control py-2 px-4 w-full rounded-md bg-transparent border border-gray-600 outline-none hover:ring-2 focus:ring-2 hover:ring-blue-500/80 focus:ring-blue-500/80"
+                    type="email" name="email" placeholder="Email Address">
+            </div>
+            <div class="form-group">
+                <input
+                    class="form-control py-2 px-4 w-full rounded-md bg-transparent border border-gray-600 outline-none hover:ring-2 focus:ring-2 hover:ring-blue-500/80 focus:ring-blue-500/80"
+                    type="password" name="password" placeholder="Password">
+            </div>
+            <div class="form-group">
+                <input
+                    class="form-control py-2 px-4 w-full rounded-md bg-transparent border border-gray-600 outline-none hover:ring-2 focus:ring-2 hover:ring-blue-500/80 focus:ring-blue-500/80"
+                    type="password" name="confirmation" placeholder="Confirm Password">
+            </div>
+            <input class="btn btn-primary bg-rose-600 font-medium tracking-wider w-fit rounded-md py-2 px-6 mb-3"
+                type="submit" value="Register">
+
+        </form>
+
+        <span>Already have an account?
+            <a class="cursor-pointer text-blue-400 underline underline-offset-2 hover:text-blue-500"
+                href="{% url 'login' %}">Login here</a>
+        </span>
+
+    </div>
+</div>
+{% endblock %}

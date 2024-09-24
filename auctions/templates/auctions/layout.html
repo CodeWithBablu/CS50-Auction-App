@@ -1,0 +1,185 @@
+{% load compress %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>{% block title %}{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="{% static 'auctions/images/auction.png' %}" type="image/x-icon">
+    {% compress css %}
+    <link href='{% static "css/styles.css" %}' rel="stylesheet" />
+    <link href="{% static 'auctions/styles.css' %}" rel="stylesheet">
+    {% endcompress %}
+</head>
+
+<body class="font-poppins bg-zinc-950 text-gray-300">
+
+    <nav class="fixed -top-1 z-20 md:top-5 left-1/2 -translate-x-1/2 max-w-7xl w-full px-0 md:px-3 xl:px-0">
+        <div
+            class="md:rounded-2xl bg-blackAplha500 backdrop-blur-lg border border-gray-800 shadow-[0_0_20px_0px_rgba(225,225,225,0.1)] py-5 px-3 w-full md:px-5 flex justify-between items-center">
+            <a href="{% url 'index' %}">
+                <div class="flex items-center">
+                    <div class="w-6 h-6 rotate-90"><img class="w-full h-full"
+                            src="{% static 'auctions/images/auction.png' %}" alt="">
+                    </div>
+                    <h1
+                        class="text-xl md:text-2xl sm:font-medium tracking-wider bg-gradient-to-r from-pink-600 to-gray-300 bg-clip-text text-transparent w-fit">
+                        <span class="text-2xl md:text-3xl italic">A</span>uctions
+                    </h1>
+                </div>
+            </a>
+
+            <div class="right-directories flex items-center gap-3 sm:gap-5">
+                <div class="links-container">
+                    <ul class="flex items-center gap-8 text-slate-400 tracking-wider font-medium">
+                        <li
+                            class="hover:text-gray-100 hidden lg:inline-block {% if page == 'active-listing'%} text-stone-300 bg-stone-800/50 px-3 py-2 rounded-full {%endif%}">
+                            <a class="dropdown-item" href="{% url 'index' %}">Active Listings</a>
+                        </li>
+
+                        <li
+                            class="hover:text-gray-100 hidden lg:inline-block {% if page == 'closed-listing'%} text-stone-300 bg-stone-800/50 px-3 py-2 rounded-full {%endif%}">
+                            <a class="dropdown-item" href="{% url 'closed-listing' %}">Closed Auctions</a>
+                        </li>
+
+                        <li
+                            class="hover:text-gray-100 hidden lg:inline-block {% if page == 'categories'%} text-stone-300 bg-stone-800/50 px-3 py-2 rounded-full {%endif%}">
+                            <a class="dropdown-item" href="{% url 'categories' %}">Categories</a>
+                        </li>
+
+
+                        <a href="{% url 'create-listing' %}">
+                            <span
+                                class="bg-blackAplha500 text-sm text-gray-300 font-medium py-[10px] px-4 rounded-full shadow-[0_0_10px_3px_rgba(219,39,119,0.4)]">
+                                Create Listing
+                            </span>
+                        </a>
+                    </ul>
+                </div>
+
+                <div class="dropdown relative flex items-center gap-3">
+                    <button id="dropdown-toggle" aria-expanded="false" aria-controls="dropdown-menu"
+                        class="dropdown-toggle relative z-30 flex items-center gap-1 md:gap-3" type="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+
+                        <div class="rounded-full py-2 px-2 bg-gradient-to-br from-transparent from-30% to-gray-700">
+                            <svg xmlns="http://www.w3.org/2000/svg" class=" w-5 h-5 sm:w-6 sm:h-6" viewBox="0 0 24 24"
+                                fill="currentColor">
+                                <path
+                                    d="M11.9999 17C15.6623 17 18.8649 18.5751 20.607 20.9247L18.765 21.796C17.3473 20.1157 14.8473 19 11.9999 19C9.15248 19 6.65252 20.1157 5.23479 21.796L3.39355 20.9238C5.13576 18.5747 8.33796 17 11.9999 17ZM11.9999 2C14.7613 2 16.9999 4.23858 16.9999 7V10C16.9999 12.6888 14.8776 14.8818 12.2168 14.9954L11.9999 15C9.23847 15 6.9999 12.7614 6.9999 10V7C6.9999 4.31125 9.1222 2.11818 11.783 2.00462L11.9999 2ZM11.9999 4C10.4022 4 9.09623 5.24892 9.00499 6.82373L8.9999 7V10C8.9999 11.6569 10.343 13 11.9999 13C13.5976 13 14.9036 11.7511 14.9948 10.1763L14.9999 10V7C14.9999 5.34315 13.6567 4 11.9999 4Z">
+                                </path>
+                            </svg>
+                        </div>
+                        {% if user.is_authenticated %}
+                        <span class="text-sm hidden md:block max-w-44 md:max-w-60 truncate">
+                            {{ user.username }}
+                        </span>
+                        {% endif %}
+
+                        <div>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24"
+                                fill="currentColor">
+                                <path
+                                    d="M12 15.0006L7.75732 10.758L9.17154 9.34375L12 12.1722L14.8284 9.34375L16.2426 10.758L12 15.0006Z">
+                                </path>
+                            </svg>
+                        </div>
+                    </button>
+
+                    <div id="dropdown-menu"
+                        class="absolute w-[180px] font-medium top-16 right-0 hide-menu ease-in-out text-gray-500 bg-blackAplha900 backdrop-blur-lg rounded-xl shadow-[0_0_20px_0px_rgba(225,225,225,0.3)]">
+
+                        {% if user.is_authenticated %}
+                        <div class="bg-zinc-900/50 text-gray-400 font-medium p-2 rounded-t-xl truncate">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="inline-block w-6 h-6" viewBox="0 0 24 24"
+                                fill="currentColor">
+                                <path
+                                    d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM7 12H9C9 13.6569 10.3431 15 12 15C13.6569 15 15 13.6569 15 12H17C17 14.7614 14.7614 17 12 17C9.23858 17 7 14.7614 7 12Z">
+                                </path>
+                            </svg>
+                            {{user}}
+                        </div>
+                        {% endif %}
+
+                        <div class="p-2">
+                            <ul class="min-w-[150px]">
+                                <li class=" cursor-pointer hover:text-gray-200 hover:bg-blue-600 rounded-md">
+                                    <a class="dropdown-item inline-block w-full py-1 px-4"
+                                        href="{% url 'watchlist' %}">My Watchlist</a>
+                                </li>
+
+                                <li class=" cursor-pointer hover:text-gray-200 hover:bg-blue-600 rounded-md lg:hidden">
+                                    <a class="dropdown-item inline-block w-full py-1 px-4" href="{% url 'index' %}">
+                                        Active Auctions</a>
+                                </li>
+
+                                <li class=" cursor-pointer hover:text-gray-200 hover:bg-blue-600 rounded-md lg:hidden">
+                                    <a class="dropdown-item inline-block w-full py-1 px-4"
+                                        href="{% url 'closed-listing' %}">
+                                        Closed Auctions</a>
+                                </li>
+
+                                <li class=" cursor-pointer hover:text-gray-200 hover:bg-blue-600 rounded-md lg:hidden">
+                                    <a class="dropdown-item inline-block w-full py-1 px-4"
+                                        href="{% url 'categories' %}">Categories</a>
+                                </li>
+
+                                {% if user.is_authenticated %}
+                                <li
+                                    class=" cursor-pointer text-rose-500  hover:bg-rose-600 hover:text-gray-200 rounded-md">
+                                    <a class="dropdown-item flex items-center justify-between w-full py-1 px-4"
+                                        href="{% url 'logout' %}">
+                                        Logout
+                                        <div class="w-6 h-6">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                                fill="currentColor">
+                                                <path
+                                                    d="M5 11H13V13H5V16L0 12L5 8V11ZM3.99927 18H6.70835C8.11862 19.2447 9.97111 20 12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C9.97111 4 8.11862 4.75527 6.70835 6H3.99927C5.82368 3.57111 8.72836 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C8.72836 22 5.82368 20.4289 3.99927 18Z">
+                                                </path>
+                                            </svg>
+                                        </div>
+                                    </a>
+                                </li>
+
+                                {% else %}
+
+                                <li class=" cursor-pointer hover:text-gray-300 hover:bg-blue-600 rounded-md">
+                                    <a class="dropdown-item flex items-center justify-between w-full py-1 px-4"
+                                        href="{% url 'login' %}">
+                                        Login
+                                        <div class="w-6 h-6">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                                fill="currentColor">
+                                                <path
+                                                    d="M10 11V8L15 12L10 16V13H1V11H10ZM2.4578 15H4.58152C5.76829 17.9318 8.64262 20 12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C8.64262 4 5.76829 6.06817 4.58152 9H2.4578C3.73207 4.94289 7.52236 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C7.52236 22 3.73207 19.0571 2.4578 15Z">
+                                                </path>
+                                            </svg>
+                                        </div>
+                                    </a>
+                                </li>
+
+                                {% endif %}
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-3 xl:px-0">
+        {% block body %}
+        {% endblock %}
+
+    </main>
+
+    <script src="{% static 'auctions/script.js' %}"></script>
+</body>
+
+</html>
+
+<!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous"> -->

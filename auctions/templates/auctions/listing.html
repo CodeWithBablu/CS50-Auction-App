@@ -1,0 +1,347 @@
+{% extends "auctions/layout.html" %}
+
+{% block title %}
+Listing
+{% endblock %}
+
+{% block body %}
+<div class="py-32 flex flex-col">
+  {% if user == highestBidder and not listing.active %}
+  <div class="flex justify-center w-full">
+    <div
+      class="flex flex-col items-center mb-5 p-3 md:text-xl font-medium tracking-wide text-green-500 max-w-[800px] w-full text-center bg-green-900/50 rounded-xl">
+      <h1>Congratualations {{user}}!!</h1>
+      <h2 class="text-gray-300 text-base">
+        You won the auctions 🎉🎉
+      </h2>
+    </div>
+  </div>
+  {%endif%}
+
+  {% if message %}
+  {% if messageType == 'alert' %}
+  <div class="w-full flex justify-center mb-5">
+    <h2 class="p-5 md:text-xl tracking-wide text-blue-500 max-w-[800px] w-full text-center bg-blue-900/20 rounded-xl">
+      {{message}}
+    </h2>
+  </div>
+  {% else %}
+  <div class="w-full flex justify-center mb-5">
+    <h2 class="p-5 md:text-xl tracking-wide text-rose-500 max-w-[800px] w-full text-center bg-rose-900/20 rounded-xl">
+      {{message}}
+    </h2>
+  </div>
+  {% endif %}
+  {% endif %}
+  {% if listing %}
+  <div class="top-cont flex flex-col md:flex-row gap-5 w-full">
+
+    <div class="right-cont md:w-3/5 xl:w-4/6 flex flex-col gap-5 p-3">
+      <div>
+        <h1 class="text-lg sm:text-xl font-semibold">{{listing.title}}</h1>
+        <h3 class="text-pink-600 text-sm sm:text-base tracking-wide">Listed by
+          <span class="underline underline-offset-4">{{listing.listedBy}}</span>
+        </h3>
+      </div>
+
+      <div class="relative z-10 w-full h-[20rem] max-h-[20rem] overflow-hidden rounded-xl md:max-w-[450px] bg-white">
+        {% if listing.image %}
+        <img src="{{listing.image}}" alt="{{listing.title}}"
+          class="w-full h-full object-contain transition-transform duration-200 hover:scale-105">
+        {% else %}
+        <img class="w-full h-full object-cover"
+          src="https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg" alt="No Image Available">
+        {% endif %}
+      </div>
+
+      <div class="w-full">
+        <p class="w-full break-words text-stone-400 xl:pr-24 tracking-wide">
+          {{listing.desc}}
+        </p>
+      </div>
+
+      <h3 class="text-slate-400 text-sm sm:text-base tracking-wide">category :&nbsp;
+        <span class="underline underline-offset-4">#{{listing.get_category_display}}</span>
+      </h3>
+    </div>
+
+    <div class="left-cont md:w-2/5 xl:w-2/6 p-3">
+
+      <div class="flex flex-col gap-8">
+
+
+        <div id="watchlist-btn" class="watchlist-btn" data-listing-id="{{ listing.id }}"
+          data-url="{% url 'addToWatchlist' listing_id=listing.id %}">
+          <svg xmlns="http://www.w3.org/2000/svg" class="inline-block w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M20.2426 4.75736C22.5053 7.02472 22.583 10.637 20.4786 12.993L11.9999 21.485L3.52138 12.993C1.41705 10.637 1.49571 7.01901 3.75736 4.75736C5.51545 2.99926 8.09315 2.56029 10.2605 3.44044L6.34315 7.35843L7.75736 8.77264L12 4.53L11.9872 4.51617C11.9918 4.52028 11.9964 4.5244 12.001 4.52853C14.35 2.42 17.98 2.49 20.2426 4.75736Z">
+            </path>
+          </svg>
+          <span>Add to Watchlist</span>
+        </div>
+
+        {# Close/Open auction by the creator #}
+        {# Check logged in user is the same as who created the item #}
+        <div>
+          {% if user == listing.listedBy %}
+          <form class="w-full flex flex-col gap-3 max-w-[800px]" action="{% url 'bidding' listing_id=listing.id %}"
+            method="post">
+            {% csrf_token %}
+            <input autocomplete="off" required
+              class="relative py-3 px-12 w-full outline-none caret-slate-50 tracking-wide text-gray-200 border-2 bg-transparent rounded-lg cursor-pointer
+                {% if listing.active %}text-rose-500 border-rose-900/50 hover:border-rose-900{% else %}text-green-600 border-green-900/50 hover:border-green-900{% endif %}"
+              type="submit" name="active" id="active"
+              value="{% if listing.active %}Close Auction{% else %}Open Auction{% endif %}" />
+          </form>
+          {% endif %}
+        </div>
+
+
+        <div class="mt-4 flex flex-col gap-5">
+          <div>
+            <span class="text-base bg-cyan-800/20 w-fit py-2 px-3 tracking-wider rounded-full text-cyan-400">
+              current price
+            </span>
+            {% if highestBidder %}
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 inline-block text-gray-500" viewBox="0 0 24 24"
+              fill="currentColor">
+              <path
+                d="M19.1642 12L12.9571 5.79291L11.5429 7.20712L16.3358 12L11.5429 16.7929L12.9571 18.2071L19.1642 12ZM13.5143 12L7.30722 5.79291L5.89301 7.20712L10.6859 12L5.89301 16.7929L7.30722 18.2071L13.5143 12Z">
+              </path>
+            </svg>
+            <span
+              class="text-base w-fit py-2 px-1 rounded-full text-cyan-500 tracking-wide underline underline-offset-4">
+              from {{highestBidder}}
+            </span>
+            {% endif %}
+          </div>
+          <h3 class="text-xl font-medium text-slate-400">Rs.
+            <span class="text-blue-600 text-2xl">{{currentPrice}}</span>
+          </h3>
+        </div>
+
+        <div>
+          {% if user != listing.listedBy %}
+          {% if user.is_authenticated and listing.active %}
+          <form class="w-full flex flex-col gap-3 max-w-[800px]" action="{% url 'bidding' listing_id=listing.id %}"
+            method="post">
+            {% csrf_token %}
+            <div class="space-y-2">
+              <label for="bid" class="text-stone-400">Bidding price</label>
+              <div class="relative flex items-center">
+                <div class="h-6 w-6 absolute left-3">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                    <path
+                      d="M20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20C16.4183 20 20 16.4183 20 12ZM22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12ZM13.5003 8C13.8278 8.43606 14.0625 8.94584 14.175 9.5H16V11H14.175C13.8275 12.7117 12.3142 14 10.5 14H10.3107L14.0303 17.7197L12.9697 18.7803L8 13.8107V12.5H10.5C11.4797 12.5 12.3131 11.8739 12.622 11H8V9.5H12.622C12.3131 8.62611 11.4797 8 10.5 8H8V6.5H16V8H13.5003Z">
+                    </path>
+                  </svg>
+                </div>
+                <input autocomplete="off" required
+                  class="relative py-3 px-12 w-full outline-none caret-slate-50 tracking-wide text-gray-200 border-2 border-gray-700 hover:border-blue-600 focus:border-blue-600 bg-transparent rounded-lg"
+                  type="number" min="{{listing.price}}" max="10000000" name="bid" id="bid"
+                  placeholder="bidding price..." />
+              </div>
+            </div>
+
+            <button type="submit"
+              class="border-2 border-stone-600 hover:border-stone-700 text-stone-400 tracking-wider rounded-lg self-end py-2 w-full">
+              Place the bid
+            </button>
+          </form>
+          {% else %}
+          <p class="flex justify-center py-3 px-3 bg-blue-900/20 text-blue-500 tracking-wide font-medium rounded-lg">
+            bid is closed</p>
+          {% endif %}
+
+          {% else %}
+          <p
+            class="flex justify-center text-center py-3 px-3 bg-indigo-900/20 text-indigo-500 tracking-wide font-medium rounded-lg">
+            Nice try! But you're already the proud owner of this listing!
+          </p>
+          <button disabled
+            class="border-2 border-stone-800 text-stone-600 mt-2 tracking-wider rounded-lg self-end py-2 w-full">
+            Place the bid
+          </button>
+          {% endif %}
+        </div>
+
+        {% if biddings %}
+        <!-- //// Bid history container -->
+        <div
+          class="bid-history-wrapper rounded-xl overflow-hidden mt-5 flex flex-col gap-2 border border-cyan-700 shadow-xl shadow-cyan-900/20 pt-3">
+          <h2 class="text-base md:text-xl text-gray-300 mb-4 px-3">Bid history</h2>
+
+          <ul class="border-l-[1px] border-t-[1px] border-gray-700 ml-2 rounded-tl-xl">
+            {% for bid in biddings %}
+            <li class="flex flex-col gap-1 w-full py-2 px-2 border-b-[1px] border-gray-700">
+              <!-- bidder -->
+              <div class="flex items-center gap-2 lg:gap-5">
+                <svg class="w-5 h-5 inline-block" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                  fill="currentColor">
+                  <path
+                    d="M20 22H4V20C4 17.2386 6.23858 15 9 15H15C17.7614 15 20 17.2386 20 20V22ZM12 13C8.68629 13 6 10.3137 6 7C6 3.68629 8.68629 1 12 1C15.3137 1 18 3.68629 18 7C18 10.3137 15.3137 13 12 13Z">
+                  </path>
+                </svg>
+                <span>{{bid.user}}</span>
+              </div>
+              <!-- bid placedAt (time) -->
+              <div class="flex items-center gap-2 lg:gap-5">
+                <svg class="w-5 h-5 inline-block" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                  fill="currentColor">
+                  <path
+                    d="M12 2C17.52 2 22 6.48 22 12C22 17.52 17.52 22 12 22C6.48 22 2 17.52 2 12C2 6.48 6.48 2 12 2ZM12 20C16.42 20 20 16.42 20 12C20 7.58 16.42 4 12 4C7.58 4 4 7.58 4 12C4 16.42 7.58 20 12 20ZM15.5355 7.05025L16.9497 8.46447L12 13.4142L10.5858 12L15.5355 7.05025Z">
+                  </path>
+                </svg>
+                <span>{{bid.bidplaced_At}}</span>
+              </div>
+              <!-- bid price -->
+              <div class="flex items-center gap-2 lg:gap-5">
+                <svg class="w-5 h-5 inline-block" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                  fill="currentColor">
+                  <path
+                    d="M20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20C16.4183 20 20 16.4183 20 12ZM22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12ZM13.5003 8C13.8278 8.43606 14.0625 8.94584 14.175 9.5H16V11H14.175C13.8275 12.7117 12.3142 14 10.5 14H10.3107L14.0303 17.7197L12.9697 18.7803L8 13.8107V12.5H10.5C11.4797 12.5 12.3131 11.8739 12.622 11H8V9.5H12.622C12.3131 8.62611 11.4797 8 10.5 8H8V6.5H16V8H13.5003Z">
+                  </path>
+                </svg>
+                <span class="text-cyan-500 tracking-wide">{{bid.amount}}</span>
+              </div>
+            </li>
+            {% endfor %}
+          </ul>
+
+        </div>
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
+
+  <div class="w-full bottom-cont flex justify-center mt-10 bg-zinc-900/30 rounded-xl py-10 px-3">
+    <div class="comment-cont max-w-[900px] w-full">
+      <h2 class="text-xl md:text-2xl mb-5">Comments</h2>
+
+      {% if user.is_authenticated %}
+      <form id="search-form" class="w-full flex flex-col gap-8 max-w-[800px]"
+        action="{% url 'comment' listing_id=listing.id %}" method="post">
+        {% csrf_token %}
+        <div class="space-y-2">
+          <textarea
+            class="p-3 w-full no-scrollbar outline-none caret-slate-50 tracking-wide text-gray-200 border-2 border-gray-700 hover:border-blue-600 focus:border-blue-600 bg-transparent rounded-lg"
+            required name="comment" id="comment" maxlength="200" rows="3"
+            placeholder="leave a comment here ..."></textarea>
+        </div>
+
+        <button type="submit" id="search-btn"
+          class="border-2 border-blue-600 hover:border-blue-700 text-white rounded-full self-end py-2 px-8">
+          save
+        </button>
+      </form>
+      {% endif %}
+
+      {% if comments %}
+      <ul class="flex flex-col gap-2 mt-10">
+        {% for comment in comments %}
+        <li class=" flex flex-col border-b-[1px] border-gray-700">
+
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2 lg:gap-5">
+              <div class="p-2 rounded-full bg-gradient-to-br from-transparent from-50% to-gray-700">
+                <svg class="w-5 h-5 inline-block" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                  fill="currentColor">
+                  <path
+                    d="M20 22H4V20C4 17.2386 6.23858 15 9 15H15C17.7614 15 20 17.2386 20 20V22ZM12 13C8.68629 13 6 10.3137 6 7C6 3.68629 8.68629 1 12 1C15.3137 1 18 3.68629 18 7C18 10.3137 15.3137 13 12 13Z">
+                  </path>
+                </svg>
+              </div>
+              <span>{{comment.user}}</span>
+            </div>
+
+            <span>{{comment.commented_At}}</span>
+          </div>
+
+          <div class="w-full py-3 px-3 md:px-6 break-words text-stone-400">
+            {{comment.content}}
+          </div>
+
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <div class="w-full flex justify-center my-5">
+        <h2
+          class="p-5 md:text-xl tracking-wide text-yellow-500 max-w-[800px] w-full text-center bg-yellow-900/20 rounded-xl">
+          ** No comments yet. Don't leave me empty 🥹🥹
+        </h2>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+  {% endif %}
+
+  <script>
+    function toggleClasses(element, classes) {
+      classes.split(' ').forEach(cls => {
+        element.classList.toggle(cls);
+      });
+    }
+
+    window.addEventListener("load", function () {
+      const watchlistBtn = document.getElementById('watchlist-btn');
+      const inWatchlist = "{{ inWatchlist|lower }}"; // Ensure it's a string that can be converted to boolean
+      const span = watchlistBtn.querySelector('span');
+      const svg = watchlistBtn.querySelector('svg');
+
+      console.log(inWatchlist);
+
+      // Check if inWatchlist is 'true' (string comparison)
+      if (inWatchlist === 'true') {
+        watchlistBtn.classList.add('active');
+        span.textContent = 'Remove Watchlist';
+      } else {
+        watchlistBtn.classList.remove('active');
+        span.textContent = 'Add to Watchlist';
+      }
+
+      document.getElementById('watchlist-btn').addEventListener('click', function () {
+
+
+        const listing_id = this.getAttribute('data-listing-id');
+        const url = this.getAttribute('data-url');
+        const csrfToken = "{{ csrf_token }}";
+
+        fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken,
+          },
+          body: JSON.stringify({
+            listing_id: listing_id
+          })
+        }).then(response => {
+          const contentType = response.headers.get("content-type");
+
+          // Check if response is JSON
+          if (contentType && contentType.includes("application/json"))
+            return response.json();
+          else
+            // Handle non-JSON response, assume it's HTML for unauthenticated users
+            return window.location.href = '/login';
+        })
+          .then(data => {
+            if (data.success) {
+              // Update the button text or state (e.g., added to watchlist)
+              this.classList.toggle('active');
+              if (data.message == "Successfully added to watchlist")
+                span.textContent = 'Remove Watchlist';
+              else
+                span.textContent = 'Add to Watchlist';
+            }
+          }).catch(error => console.log('Error:', error));
+      });
+
+    });
+
+
+  </script>
+</div>
+{% endblock %}

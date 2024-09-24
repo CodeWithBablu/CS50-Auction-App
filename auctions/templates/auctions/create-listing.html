@@ -1,0 +1,104 @@
+{% extends "auctions/layout.html" %}
+
+{% block title %}
+Create Listing
+{% endblock %}
+
+{% block body %}
+
+<div class="py-32 flex flex-col items-center">
+  <h1
+    class="bg-gradient-to-r from-sky-300 to-purple-500 w-fit bg-clip-text text-transparent font-medium tracking-widest text-2xl mb-10">
+    Create Listing
+  </h1>
+
+  <form class="w-full flex flex-col gap-8 max-w-[800px]" action="{% url 'create-listing' %}" method="post">
+    {% csrf_token %}
+
+    <div class="space-y-2">
+      <label for="title">Title <span class="text-rose-500">*</span></label>
+      <input autocomplete="off" required
+        class="p-3 w-full outline-none caret-slate-50 tracking-wide text-gray-200 border-2 border-gray-700 hover:border-blue-600 focus:border-blue-600 bg-transparent rounded-lg"
+        type="text" name="title" id="title" placeholder="title" maxlength="64" />
+    </div>
+
+    <div class="space-y-2">
+      <label for="shortdesc">Short Description <span class="text-rose-500">*</span></label>
+      <input autocomplete="off" required
+        class="p-3 w-full outline-none caret-slate-50 tracking-wide text-gray-200 border-2 border-gray-700 hover:border-blue-600 focus:border-blue-600 bg-transparent rounded-lg"
+        type="text" name="shortdesc" id="shortdesc" placeholder="short desc ..." maxlength="120" />
+    </div>
+
+    <div class="space-y-2">
+      <label for="desc">Description <span class="text-rose-500">*</span></label>
+      <textarea
+        class="p-3 w-full no-scrollbar outline-none caret-slate-50 tracking-wide text-gray-200 border-2 border-gray-700 hover:border-blue-600 focus:border-blue-600 bg-transparent rounded-lg"
+        required name="desc" id="desc" maxlength=400 rows="4"
+        placeholder="describe something about the item ..."></textarea>
+    </div>
+
+
+    <div class="space-y-2">
+      <label for="category">Category <span class="text-rose-500">*</span></label>
+
+      <select name="category" id="category" required
+        class="p-2 block bg-transparent border-2 border-gray-700 rounded-lg outline-none">
+        <option class="text-gray-600" value="ELE">Electronics</option>
+        <option class="text-gray-600" value="FAS">Fashion</option>
+        <option class="text-gray-600" value="HOM">Home</option>
+        <option class="text-gray-600" value="TOY">Toys</option>
+        <option class="text-gray-600" value="ART">Art</option>
+        <option class="text-gray-600" value="INS">Musical Instruments</option>
+      </select>
+    </div>
+
+    <div class="space-y-2">
+      <label for="price">Price <span class="text-rose-500">*</span></label>
+      <div class="relative flex items-center">
+        <div class="h-6 w-6 absolute left-3">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20C16.4183 20 20 16.4183 20 12ZM22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12ZM13.5003 8C13.8278 8.43606 14.0625 8.94584 14.175 9.5H16V11H14.175C13.8275 12.7117 12.3142 14 10.5 14H10.3107L14.0303 17.7197L12.9697 18.7803L8 13.8107V12.5H10.5C11.4797 12.5 12.3131 11.8739 12.622 11H8V9.5H12.622C12.3131 8.62611 11.4797 8 10.5 8H8V6.5H16V8H13.5003Z">
+            </path>
+          </svg>
+        </div>
+        <input autocomplete="off" required
+          class="relative py-3 px-12 w-full outline-none caret-slate-50 tracking-wide text-gray-200 border-2 border-gray-700 hover:border-blue-600 focus:border-blue-600 bg-transparent rounded-lg"
+          type="number" max="10000000" name="price" id="price" placeholder="starting bid..." />
+      </div>
+    </div>
+
+    <div class="space-y-2">
+      <label for="active">Active: &nbsp;</label>
+      <input checked type="checkbox" name="active" id="active" />
+    </div>
+
+
+    <div class="space-y-2">
+      <label for="image">Image</label>
+      <div class="relative flex items-center">
+        <div class="h-6 w-6 absolute left-3">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M19.5761 14.5764L15.7067 10.707C15.3162 10.3164 14.683 10.3164 14.2925 10.707L6.86484 18.1346C5.11358 16.6671 4 14.4636 4 12C4 7.58172 7.58172 4 12 4C16.4183 4 20 7.58172 20 12C20 12.9014 19.8509 13.7679 19.5761 14.5764ZM8.58927 19.2386L14.9996 12.8283L18.6379 16.4666C17.1992 18.6003 14.7613 19.9998 11.9996 19.9998C10.7785 19.9998 9.62345 19.7268 8.58927 19.2386ZM12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22ZM11 10C11 11.1046 10.1046 12 9 12C7.89543 12 7 11.1046 7 10C7 8.89543 7.89543 8 9 8C10.1046 8 11 8.89543 11 10Z">
+            </path>
+          </svg>
+        </div>
+        <input autocomplete="off"
+          class="relative py-3 px-12 w-full outline-none caret-slate-50 tracking-wide text-gray-200 border-2 border-gray-700 hover:border-blue-600 focus:border-blue-600 bg-transparent rounded-lg"
+          type="url" name="image" id="image" placeholder="image URL..." />
+      </div>
+    </div>
+
+
+    <button type="submit" class=" bg-blue-600 hover:bg-blue-700 text-white rounded-full self-end py-2 px-8">
+      save
+    </button>
+
+  </form>
+  {% if error %}
+  <p class="text-rose-500 mt-5 font-medium">{{error}}</p>
+  {% endif%}
+
+</div>
+{% endblock %}
