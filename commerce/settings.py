@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/3.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.0/ref/settings/
 """
-
+from wsgi import get_wsgi_application
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -25,11 +25,12 @@ SECRET_KEY = '6ps8j!crjgrxt34cqbqn7x&b3y%(fny8k8nh21+qa)%ws3fh!q'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['127.0.0.1', '.vercel.app']
+# new wsgi.py
+app = get_wsgi_application()
+WSGI_APPLICATION = 'commerce.wsgi.app'
 
 # Application definition
-
 INSTALLED_APPS = [
     'auctions',
     'django.contrib.admin',
